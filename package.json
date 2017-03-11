@@ -1,6 +1,6 @@
 {
-  "name": "node-starter",
-  "version": "0.1.0",
+  "name": "kue-util",
+  "version": "0.0.0",
   "description": "",
   "main": "lib",
   "scripts": {
@@ -17,9 +17,11 @@
     "lib",
     "flow-typed/index.js.flow"
   ],
-  "bin": {},
+  "bin": {
+    "clear-jobs-by-status": "./lib/bin/clear-jobs-by-status.js"
+  },
   "repository": {
-    "url": "git+https://github.com/joehua87/node-starter.git",
+    "url": "git+https://github.com/joehua87/kue-util.git",
     "type": "git"
   },
   "nyc": {
@@ -30,9 +32,9 @@
   "author": "joehua87 <joehua87@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/joehua87/node-starter/issues"
+    "url": "https://github.com/joehua87/kue-util/issues"
   },
-  "homepage": "https://github.com/joehua87/node-starter#readme",
+  "homepage": "https://github.com/joehua87/kue-util#readme",
   "devDependencies": {
     "babel-core": "^6.21.0",
     "babel-eslint": "^7.1.1",
@@ -43,6 +45,7 @@
     "babel-preset-latest": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
     "chai": "^3.5.0",
+    "debug": "^2.6.2",
     "eslint": "^3.12.2",
     "eslint-config-airbnb-base": "^11.0.0",
     "eslint-plugin-flowtype": "^2.29.1",
@@ -53,6 +56,10 @@
   },
   "dependencies": {
     "babel-runtime": "^6.23.0",
-    "bluebird": "^3.4.7"
+    "bluebird": "^3.4.7",
+    "inquirer": "^3.0.6",
+    "ioredis": "^2.5.0",
+    "kue": "^0.11.5",
+    "ramda": "^0.23.0"
   }
 }

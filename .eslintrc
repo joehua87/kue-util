@@ -3,6 +3,7 @@
   "extends": ["airbnb-base", "plugin:flowtype/recommended"],
   "plugins": ["eslint-plugin-flowtype"],
   "rules": {
+    "no-underscore-dangle": 0,
     "semi": [2, "never"],
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
   },
