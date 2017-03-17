@@ -18,7 +18,8 @@
     "flow-typed/index.js.flow"
   ],
   "bin": {
-    "clear-jobs-by-status": "./lib/bin/clear-jobs-by-status.js"
+    "clear-jobs-by-status": "./lib/bin/clear-jobs-by-status.js",
+    "requeue": "./lib/bin/requeue.js"
   },
   "repository": {
     "url": "git+https://github.com/joehua87/kue-util.git",
