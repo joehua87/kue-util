@@ -103,9 +103,4 @@ export default async function enqueue({
   }
 
   debug(`Enqueue ${itemsToEnqueue.length} items`)
-
-  queue.shutdown(5000, (err) => {
-    debug('Kue shutdown: ', err || '')
-    process.exit(0)
-  })
 }
