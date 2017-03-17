@@ -8,7 +8,6 @@ import Redis from 'ioredis'
 const debug = require('debug')('kue-util:enqueue')
 
 // Only use 1 connection of redis to improve perfomance, I guess
-
 export async function getExistsKey(redis: any, { queueName, items, uniqueKey }: {
   queueName: string,
   items: Array<string>,
@@ -70,7 +69,7 @@ export default async function enqueue({
   // Only enqueue items that not exists
   const itemsToEnqueue = force ? items : items.filter(item => !existsKeys.includes(item[uniqueKey]))
 
-  const promises = mapP(
+  await mapP(
     itemsToEnqueue,
     itemData => (
       new Promise((resolve, reject) => {
@@ -90,7 +89,6 @@ export default async function enqueue({
     ),
     { concurrency },
   )
-  await Promise.all(promises)
 
   const setName = `set:${queueName}` // set to prevent duplicated
 
