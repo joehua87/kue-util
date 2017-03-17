@@ -1,6 +1,7 @@
 // @flow
 
 import R from 'ramda'
+import { map as mapP } from 'bluebird'
 import kue from 'kue'
 import Redis from 'ioredis'
 
@@ -8,7 +9,7 @@ const debug = require('debug')('kue-util:enqueue')
 
 // Only use 1 connection of redis to improve perfomance, I guess
 
-export async function getExistsKey(redis, { queueName, items, uniqueKey }: {
+export async function getExistsKey(redis: any, { queueName, items, uniqueKey }: {
   queueName: string,
   items: Array<string>,
   uniqueKey: string,
@@ -43,6 +44,7 @@ export default async function enqueue({
   force = false,
   delay = 0,
   attempts = 3,
+  concurrency = 16,
 }: {
   redisHost: string,
   queueName: string,
@@ -51,6 +53,7 @@ export default async function enqueue({
   force?: boolean,
   delay?: number,
   attempts?: number,
+  concurrency?: number,
 }) {
   debug(`Start enqueue ${items.length} to ${queueName}`)
   const redis = new Redis({
@@ -67,22 +70,26 @@ export default async function enqueue({
   // Only enqueue items that not exists
   const itemsToEnqueue = force ? items : items.filter(item => !existsKeys.includes(item[uniqueKey]))
 
-  const promises = itemsToEnqueue.map(itemData => (
-    new Promise((resolve, reject) => {
-      queue.create(queueName, itemData)
-      .attempts(attempts)
-      .delay(delay)
-      .save((err) => {
-        i += 1
-        if (i % 1000 === 0) debug(`Enqueue ${i} items`)
-        if (err) {
-          reject(err)
-          return
-        }
-        resolve()
+  const promises = mapP(
+    itemsToEnqueue,
+    itemData => (
+      new Promise((resolve, reject) => {
+        queue.create(queueName, itemData)
+        .attempts(attempts)
+        .delay(delay)
+        .save((err) => {
+          i += 1
+          if (i % 1000 === 0) debug(`Enqueue ${i} items`)
+          if (err) {
+            reject(err)
+            return
+          }
+          resolve()
+        })
       })
-    })
-  ))
+    ),
+    { concurrency },
+  )
   await Promise.all(promises)
 
   const setName = `set:${queueName}` // set to prevent duplicated
